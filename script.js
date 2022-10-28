@@ -17,6 +17,19 @@ function registrarParticipante(nome){
 }
 
 function entrarNoChat(){
+
+}
+
+function entrarNaSala() {
+  carregarMensagens();
+  carregarParticipantes();
+}
+
+function carregarMensagens(){
+
+}
+
+function carregarParticipantes(){
     
 }
 
