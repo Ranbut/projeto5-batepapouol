@@ -1,6 +1,9 @@
 let mensagens = [];
 let participantes = [];
 
+let test = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages")
+console.log(test);
+
 perguntarNome();
 
 function perguntarNome() {
@@ -41,7 +44,7 @@ function mostrarMensagens(){
     //Exibir messagens no HTML
 }
 
-function enviarMessagem(){
+function enviarMensagem(){
     //Enviar messagem e exibir-la ao chat
 }
 
