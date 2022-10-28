@@ -9,3 +9,7 @@
 .user{
     font-weight: bold;
 }
+.send-message{
+    position: fixed;
+    bottom: 3%;
+}
