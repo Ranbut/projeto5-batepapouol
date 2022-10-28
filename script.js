@@ -17,12 +17,8 @@ function registrarParticipante(nome){
 }
 
 function entrarNoChat(){
-
-}
-
-function entrarNaSala() {
-  carregarMensagens();
-  carregarParticipantes();
+    carregarMensagens();
+    carregarParticipantes();
 }
 
 function carregarMensagens(){
@@ -30,7 +26,7 @@ function carregarMensagens(){
 }
 
 function carregarParticipantes(){
-    
+
 }
 
 function mostrarMensagens(){
