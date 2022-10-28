@@ -29,8 +29,20 @@ function carregarParticipantes(){
 
 }
 
+function atualizarMesagens(){
+
+}
+
+function atualizarParticipantes(){
+    
+}
+
 function mostrarMensagens(){
     //Exibir messagens no HTML
+}
+
+function enviarMessagem(){
+    //Enviar messagem e exibir-la ao chat
 }
 
 function mostrarParticipantes(){        
