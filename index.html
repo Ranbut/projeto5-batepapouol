@@ -75,7 +75,11 @@
   <footer class="disable">
     <div class="entrada-mensagem">
       <input type="text" placeholder="Escreva aqui..." class="input-mensagem"></input>
-      <span class="enviando">Enviando para Todos</span>
+      <select name="typeMessage" id="typeMessage">
+        <option value="message">Todos</option>
+        <option value="private_message">João</option>
+        <option value="private_message">Maria</option>
+      </select>
     </div>
     <button onclick="enviarMensagem()">
       <ion-icon name="paper-plane-outline"></ion-icon>

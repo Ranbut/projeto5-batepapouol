@@ -1,6 +1,8 @@
 let mensagens = [];
 let participantes = [];
 
+let selectes = document.querySelector("#typeMessage");
+
 //Dados de Envio
 let nome;
 let destinatario = "Todos";
@@ -108,6 +110,8 @@ function mostrarMensagens(){
 }
 
 function enviarMensagem(){
+  const select = document.querySelector("#typeMessage");
+  tipoMensagem = select.value;
   const input = document.querySelector(".input-mensagem");
   const texto = input.value;
   input.value = "";
