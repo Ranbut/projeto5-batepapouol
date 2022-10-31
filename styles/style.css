@@ -123,9 +123,6 @@ footer button {
   display: inline;
 }
 
-.mensagens-container {
-}
-
 .login{
     position: fixed;
     z-index: 2;

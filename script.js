@@ -1,5 +1,7 @@
 let mensagens = [];
 let participantes = [];
+
+//Dados de Envio
 let nome;
 let destinatario = "Todos";
 let tipoMensagem = "message"; //Tipos: 1- message, 2 - private_message, 3 - status
