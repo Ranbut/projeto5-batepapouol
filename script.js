@@ -2,7 +2,7 @@ let mensagens = [];
 let participantes = [];
 let nome;
 let destinatario = "Todos";
-let tipoMensagem = "message";
+let tipoMensagem = "message"; //Tipos: 1- message, 2 - private_message, 3 - status
 
 const requi = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
 
@@ -106,7 +106,26 @@ function mostrarMensagens(){
 }
 
 function enviarMensagem(){
-    //Enviar messagem
+  const input = document.querySelector(".input-mensagem");
+  const texto = input.value;
+  input.value = "";
+
+  if(texto === "") return;
+   
+  const dados = {
+    from: nome,
+    to: destinatario,
+    text: texto,
+    type: tipoMensagem
+  };
+
+  const requisicao = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", dados);
+
+  requisicao.catch(carregarMensagens);
+}
+
+function atualizar() {
+  window.location.reload();
 }
 
 function mostrarParticipantes(){        
