@@ -1,42 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/reset.css">
-    <link rel="stylesheet" href="styles/style.css">
-    <title>Bate-Papo UOL</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bate-papo UOL</title>
+  <link href="styles/reset.css" rel="stylesheet">
+  <link href="styles/style.css" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/ionicons@5.1.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule="" src="https://unpkg.com/ionicons@5.1.2/dist/ionicons/ionicons.js"></script>
 </head>
-  <body>
-    <div class="header">
-      <img src="imagens/logo.png" alt="logo">
-      <ion-icon name="people-sharp" alt="participantes" onclick=""></ion-icon>
+
+<body>
+  
+  <div class="login"> 
+    <img src="imagens/logo.png">
+    <input type="text" placeholder="Digite seu nome" maxlength="16" class="input-nome">
+    <button onclick="registrarParticipante()">
+       Entrar
+   </button>
+  </div>
+
+  <header class="disable">
+    <img src="imagens/logo.png">
+    <ion-icon name="people-sharp" onclick=""></ion-icon>
+  </header>
+
+  <main class="disable">
+    <ul class="mensagens-container">
+        <li class="status">
+          <span class="time">(09:21:45)</span>
+          <span>
+            <strong>João</strong>
+          </span>
+          <span> entra na sala...</span>
+        </li>
+        <li class="public_message">
+          <span class="time">(09:22:28)</span>
+          <span>
+            <strong>João</strong>
+             para 
+             <strong>Todos:</strong>
+          </span>
+          <span> Bom dia</span>
+        </li>
+        <li class="public_message">
+          <span class="time">(09:22:38)</span>
+          <span>
+            <strong>Maria</strong>
+             para 
+             <strong>João: </strong>
+          </span>
+          <span> Oi João :)</span>
+        </li>
+        <li class="private_message">
+          <span class="time">(09:22:48)</span>
+          <span>
+            <strong>João</strong>
+             reservadamente para 
+             <strong>Maria: </strong>
+          </span>
+          <span> Oi gatinha quer tc?</span>
+        </li>
+        <li class="status">
+          <span class="time">(09:22:58)</span>
+          <span>
+            <strong>Maria</strong>
+          </span>
+          <span> sai da sala...</span>
+        </li>
+    </ul>
+  </main>
+
+  <footer class="disable">
+    <div class="entrada-mensagem">
+      <input type="text" placeholder="Escreva aqui..." class="input-mensagem"></input>
+      <span class="enviando">Enviando para Todos</span>
     </div>
-    <div class = message>
-      <span class="time">(09:21:45)</span>  <span class="user">João</span> entra na sala...
-    </div>
-    <div class = message>
-      <span class="time">(09:22:28)</span>  <span class="user">João</span> para <span class="user">Todos:</span> Bom dia
-    </div>
-    <div class = message>
-      <span class="time">(09:22:38)</span>  <span class="user">Maria</span> <span class="user">João:</span> Oi João :)
-    </div>
-    <div class = message>
-      <span class="time">(09:22:48)</span>  <span class="user">João</span> reservadamente para <span class="user">Maria:</span> Oi gatinha quer tc?
-    </div>
-    <div class = message>
-      <span class="time">(09:22:58)</span>  <span class="user">Maria</span> sai da sala...
-    </div>
-    <footer>
-      <div class="container-input">
-        <input type="text" placeholder="Escreva aqui..." class="input-message">
-      </div>
-      <button onclick="enviarMensagem()">
-        <ion-icon name="paper-plane-outline" alt="enviar"></ion-icon>
-      </button>
-    </footer>
-    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="script.js"></script>
-  </body>
+    <button onclick="enviarMensagem()">
+      <ion-icon name="paper-plane-outline"></ion-icon>
+    </button>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>
