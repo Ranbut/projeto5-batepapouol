@@ -1,139 +1,204 @@
-let mensagens = [];
-let participantes = [];
+const urlAPI = 'https://mock-api.driven.com.br/api/v6/uol/';
 
-let selectes = document.querySelector("#typeMessage");
+let nome, nomeReservado;
 
-//Dados de Envio
-let nome;
-let destinatario = "Todos";
-let tipoMensagem = "message"; //Tipos: 1- message, 2 - private_message, 3 - status
+let idIntervalAtualizaStatus, idIntervalMensagem;
 
-const requi = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
+function toggleMenu(){
+    const fundo_menu = document.querySelector('.menu-fundo');
+    const menu = document.querySelector('.menu');
 
-function registrarParticipante(){
-    const nomeInput = document.querySelector(".input-nome");    
-    nome = nomeInput.value ;
-    const dados = { name: nome};
-    const requisicao = axios.post("https://mock-api.driven.com.br/api/v6/uol/participants", dados);
-    requisicao.then(entrarNoChat);
-    requisicao.catch(errorEntrar);
-    //Colocar no servidor dados do participante atual   
+   
+    fundo_menu.classList.toggle('fundo-escondido');
+    menu.classList.toggle('escondido');
 }
 
-function errorEntrar(){
-    alert("Ocorreu um error ao entrar.\nVerifique sua conexão ou\nse o nome é válido.");
-}
+function renderizarMensagens(resposta){
+    console.log(resposta);    
 
-function entrarNoChat(){
-    const login = document.querySelector(".login");
-    login.classList.add("disable");
+    const listaDeMensagens = resposta.data;
 
-    const header = document.querySelector("header");
-    header.classList.remove("disable");
+    // pegar o ul das mensagens
+    const container = document.querySelector('.mensagens-container');
 
-    const main = document.querySelector("main");
-    main.classList.remove("disable");
+    // limpar o contudo que esta dentro dessa ul
+    container.innerHTML = '';
 
-    const footer = document.querySelector("footer");
-    footer.classList.remove("disable");
+    // percorrer o array de mensagens, pegar cada mensagem e adicionar na ul
+    for(let i = 0; i < listaDeMensagens.length; i++){
+        
+        let mensagem = listaDeMensagens[i];
 
-    carregarMensagens();
-    carregarParticipantes();
+        let template;
+        
+        if ( mensagem.to !== 'Todos'){
+        
+            template = `
+                <li class="conversa-publica"  data-test="message">
+                    <span class="horario">( ${mensagem.time} )</span>
+                        <strong>${mensagem.from}</strong>
+                        <span> para </span>
+                        <strong>${mensagem.to}: </strong>
+                    <span>${mensagem.text}</span>
+                </li>            
+            `;
 
-    atualizarMesagens();
-    atualizarParticipantes();
+        }else if ( mensagem.from === null ){
+            
+            template = `
+                <li class="entrada-saida"  data-test="message">
+                    <span class="horario">( ${mensagem.time} )</span>
+                    <strong>( ${mensagem.from} )</strong>          
+                    <span>${mensagem.text}</span>            
+                </li>
+            `;
+
+        }else if ( mensagem.to === 'Todos'){
+            template= `
+                <li class="conversa-privada"  data-test="message">
+                    <span class="horario">( ${mensagem.time} )</span>
+                        <strong>${mensagem.from}</strong>
+                            <span> reservadamente para </span>
+                        <strong>${mensagem.to}: </strong>
+                    <span>${mensagem.text}</span>
+                </li>
+            `;
+        }
+
+        container.innerHTML += template;
+
+    }
+
+    // posicionar na ultima mensagem
+    const ultimaMensagem = document.querySelector('.mensagens-container li:last-child');
+    console.log(ultimaMensagem);
+    ultimaMensagem.scrollIntoView();
+
 }
 
 function carregarMensagens(){
-    const requisicao = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
-    requisicao.then(processarMensagens);
+    console.log('enviando o pedido');
+    // promise da função carregarMensagens - escopo é local 
+    const promise = axios.get(`${urlAPI}messages`);
+    promise.then(renderizarMensagens);
 }
 
-function processarMensagens(resposta) {
-    mensagens = [];
-  
-    for (let i = 0; i < resposta.data.length; i++) {
-      const mensagem = resposta.data[i];
-      mensagens.push(mensagem);
+function erroRegistroUsuario(erro){
+    console.log(erro);
+}
+
+function registrouUsuario(resposta){
+    console.log(resposta);    
+}
+
+function registrarUsuario(){
+
+    // promise da função registrarUsuario - escopo local
+   const novoUsuario = {name:nome};
+
+   const promise = axios.post(`${urlAPI}participants`, novoUsuario);
+   promise.catch(erroRegistroUsuario);
+   promise.then(registrouUsuario);
+    
+}
+
+function erroAtualizarStatus(erro){
+    console.log('Erro ao atualizar status');
+    console.log(erro);
+}
+
+function sucessoAtualizarStatus(resposta){
+    console.log('Status atualizado');
+    console.log(resposta);
+}
+
+function atualizarStatus(){
+    const promise = axios.post(`${urlAPI}status`, {name:nome});
+    promise.catch(erroAtualizarStatus);
+    promise.then(sucessoAtualizarStatus);
+}
+
+function renderizarParticipantes(resposta){
+
+    console.log('Renderizando participantes');
+    console.log(resposta);
+    
+    const listaParticipantes = document.querySelector('.contatos');
+
+    // inserindo o elemento para todos os particpantes
+    listaParticipantes.innerHTML = `
+    <li class="visibilidade-publico selecionado" onclick = "selecionarDestinatario('Todos', this)" >
+        <ion-icon name="people"></ion-icon><span class="nome">Todos</span><ion-icon class="check" name="checkmark-outline">
+        </ion-icon>
+    </li>  
+    `;
+
+    for( let i = 0; i < resposta.data.length; i++){
+        let participante = resposta.data[i];
+
+        listaParticipantes.innerHTML += `
+            <li class="visibilidade-publico" onclick = "selecionarDestinatario('${participante.name}', this)">
+                <ion-icon name="person-circle"></ion-icon><span class="nome">${participante.name}</span><ion-icon class="check" name="checkmark-outline">
+                </ion-icon>
+            </li>        
+        `;
     }
-  
-    mostrarMensagens();
-  }
+
+}
 
 function carregarParticipantes(){
-    //Atualizar Lista de Participantes
+
+    const promise = axios.get(`${urlAPI}participants`);
+    promise.then(renderizarParticipantes);
+    
 }
 
-function processarParticipantes(resposta){
-    //Processamento de Participantes
+function erroEnviarMensagem(erro){
+    console.log('Ocorreu um erro ao enviar a mensagem');
+    console.log(erro);
 }
 
-function atualizarMesagens(){
-    setInterval(carregarMensagens, 3000);
-}
-
-function atualizarParticipantes(){
-    setInterval(carregarParticipantes, 10000);
-}
-
-function mostrarMensagens(){
-    const ul = document.querySelector(".mensagens-container");
-    let html = "";
-  
-    for (let i = 0; i < mensagens.length; i++) {
-      const mensagem = mensagens[i];
-  
-      html += `
-        <li class="${mensagem.type}">
-          ${
-            mensagem.time !== undefined
-             ? `<span class="time">(${mensagem.time})</span>`
-             : ``
-          }
-          <span>
-            <strong>${mensagem.from}</strong>
-          </span>
-          ${
-            mensagem.type === "private_message"
-             ? `<span> reservadamente para </span>`
-             : `<span> para </span>`
-          }
-          <strong>${mensagem.to}</strong>
-          <span>${mensagem.text}</span>
-        </li>
-      `;
-    }
-  
-    ul.innerHTML = html;
-  
-    setTimeout(() => document.querySelector(".mensagens-container li:last-child").scrollIntoView(), 0);
+function sucessoEnviarMensagem(resposta){
+    console.log('Mensagem enviada com sucesso');
+    console.log(resposta);
 }
 
 function enviarMensagem(){
-  const select = document.querySelector("#typeMessage");
-  tipoMensagem = select.value;
-  const input = document.querySelector(".input-mensagem");
-  const texto = input.value;
-  input.value = "";
-
-  if(texto === "") return;
-   
-  const dados = {
-    from: nome,
-    to: destinatario,
-    text: texto,
-    type: tipoMensagem
-  };
-
-  const requisicao = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", dados);
-
-  requisicao.catch(carregarMensagens);
+    // pegar o texto que o usuario digitou
+    const texto = document.querySelector('.input-mensagem').value;
+    // criar um objeto mensagem
+    const novaMensagem = {
+        from: nome,
+	    to: nomeReservado,
+	    text: texto,
+	    type: "message" // ou "private_message" para o bônus
+    }
+    // enviar essa mensagem com axios
+    const promise = axios.post(`${urlAPI}messages`, novaMensagem);
+    promise.catch(erroEnviarMensagem);
+    promise.then(sucessoEnviarMensagem);
 }
 
-function atualizar() {
-  window.location.reload();
+function selecionarDestinatario(participante, elemento){
+    
+    nomeReservado = participante;
+
+    console.log(participante);
+    console.log(elemento);
+    elemento.classList.toggle('selecionado');
+
 }
 
-function mostrarParticipantes(){        
-    //Exibir participantes no HTML
+function carregarChat(){
+
+    nome = prompt("Qual é o seu nome?");    
+
+    registrarUsuario();
+    carregarMensagens();
+    carregarParticipantes();
+
+    idIntervalAtualizaStatus = setInterval(atualizarStatus, 5000);
+    idIntervalMensagem = setInterval(carregarMensagens, 3000);
 }
+
+carregarChat();
