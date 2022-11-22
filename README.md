@@ -44,7 +44,125 @@ Seu terceiro projeto com JavaScript será a implementação de um bate-papo tota
         
     - [X]  Nesse envio, deve ser informado o remetente, o destinatário e se a mensagem é reservada ou não.
         - Escolher um destinário e se a mensagem é reservada ou pública é um **requisito bônus** (ver abaixo). Logo, se você não implementar o bônus, sempre envie destinatário como **Todos** e a mensagem como **pública**.
+
+# API Chat UOL
+
+Chegou a hora de implementar a comunicação com o servidor no projeto!
+
+- Entrar na sala
     
+    Para entrar na sala, deve-se enviar ao servidor o nome do usuário. Para isso, envie uma requisição `POST` para a URL:
+    
+    ```jsx
+    https://mock-api.driven.com.br/api/v6/uol[/participants](https://mock-api.bootcamp.respondeai.com.br/api/v2/uol/participants) 
+    ```
+    
+    Enviando um objeto no formato:
+    
+    ```jsx
+    {
+      name: "João"
+    }
+    ```
+    
+    O servidor pode responder com status `400` se já houver um usuário online com esse nome. Se for o caso, a aplicação deve pedir um novo nome até que o servidor responda com status `200`.
+    
+- Manter conexão
+    
+    O servidor precisa saber que o usuário continua online. Se o usuário não envia nenhuma mensagem, como ele pode inferir se o usuário continua ou não na página?
+    
+    Para resolver isso, o servidor espera que seu sistema avise continuamente que o usuário permanece utilizando o chat. Para isso, o sistema deve enviar uma requisição `POST` para a URL:
+    
+    ```jsx
+    https://mock-api.driven.com.br/api/v6/uol/status
+    ```
+    
+    Enviando um objeto no formato
+    
+    ```jsx
+    {
+      name: "João"
+    }
+    ```
+    
+    enviando o nome do usuário que foi pedido ao entrar na página.
+    
+    Esta requisição deve ser feita a cada 5s. 
+    
+- Buscar mensagens
+    
+    Para buscar mensagens do servidor, mande uma requisição `GET` para a URL:
+    
+    ```jsx
+    https://mock-api.driven.com.br/api/v6/uol/messages
+    ```
+    
+    A resposta será um array de objetos, como o seguinte:
+    
+    ```jsx
+    [
+    	{
+    		from: "João",
+    		to: "Todos",
+    		text: "entra na sala...",
+    		type: "status",
+    		time: "08:01:17"
+    	},
+    	{
+    		from: "João",
+    		to: "Todos",
+    		text: "Bom dia",
+    		type: "message",
+    		time: "08:02:50"
+    	},
+    ]
+    ```
+    
+    Nos objetos, o campo `type` identifica o tipo da mensagem. Existem os seguintes valores:
+    
+    - `status`: mensagem de estado, como entrou ou saiu da sala
+    - `message`: mensagem pública
+    - `private_message`: mensagem particular
+- Enviar mensagens
+    
+    Para enviar mensagens, você deve fazer uma requisição `POST` para a URL:
+    
+    ```jsx
+    https://mock-api.driven.com.br/api/v6/uol/messages
+    ```
+    
+    Nesta requisição, você deve enviar um objeto como o seguinte:
+    
+    ```jsx
+    {
+    	from: "nome do usuário",
+    	to: "nome do destinatário (Todos se não for um específico)",
+    	text: "mensagem digitada",
+    	type: "message" // ou "private_message" para o bônus
+    }
+    ```
+    
+
+- **BÔNUS**: Buscar participantes
+    
+    Para buscar a lista de participantes, envie uma requisição `GET` para a URL:
+    
+    ```jsx
+    https://mock-api.driven.com.br/api/v6/uol/participants
+    ```
+    
+    Esta requisição retornará um array de objetos no formato:
+    
+    ```jsx
+    [
+    	{
+    		name: "João"
+    	},
+    	{
+    		name: "Maria"
+    	}
+    ]
+    ```
 
 # Bônus (opcional)
 
